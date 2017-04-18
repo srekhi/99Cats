@@ -1,0 +1,36 @@
+<% if action == :new %>
+  <% action_url = cat_cat_rental_requests_url %>
+<% elsif action == :edit%>
+  <% action_url = edit_cat_cat_rental_request_url(rental_cat, request) %> <!--Potential error -->
+<% end %>
+
+<% rental_cat = rental.cat || Cat.new %>
+
+<form action="<%= action_url %>" method="post">
+  <% if rental.persisted? %>
+    <input type="hidden" name="_method" value="patch">
+  <% end %>
+
+  <label for="cat_choice">Cat Choice:</label>
+  <select id="cat_choice" name="request[cat_id]">
+    <option disabled <%= 'selected' if action == :new %> >--Select color--</option>
+    <% Cat.all.each do |cat| %>
+      <option value="<%= cat.id %>" <%= cat.id == rental_cat.id ? 'selected' : "" %> > <%= cat.name %> </option>
+    <% end %>
+  </select>
+
+  <br>
+
+  <label for="start_date">Start Date</label>
+  <input type="date" name="request[start_date]" value="<%rental.start_date%>">
+
+  <br>
+
+  <label for="end_date">End Date</label>
+  <input type="date" name="request[end_date]" value="<%rental.end_date%>">
+
+  <br><br>
+
+  <input type="submit" value="<%= action.capitalize %>">
+
+</form>
