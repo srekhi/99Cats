@@ -26,4 +26,22 @@ class CatRentalRequest < ActiveRecord::Base
     end
   end
 
+  def approve!
+    unless overlapping_approved_requests.exists?
+      ActiveRecord::Base.transaction do
+        self.status = 'APPROVED'
+        save
+        overlapping = []
+        overlapping_requests.each {|request| overlapping << request}
+        overlapping.each(&:deny!)
+      end
+    end
+  end
+
+  protected
+
+  def deny!
+    self.status = 'DENIED'
+    save
+  end
 end
