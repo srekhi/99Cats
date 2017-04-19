@@ -21,6 +21,7 @@ class CatRentalRequest < ActiveRecord::Base
   end
 
   def does_not_overlap_approved_request
+    return if self.status == 'DENIED'
     if overlapping_approved_requests.exists?
       errors[:no_overlaps] << "Overlapping request"
     end
